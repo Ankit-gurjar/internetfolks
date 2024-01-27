@@ -49,20 +49,47 @@ const createRole = expressAsyncHandler(async (req, res) => {
 });
 
 const getallRole = expressAsyncHandler(async (req, res) => {
+  const page_no = parseInt(req.query.page);
+  const limit = parseInt(10);
   try {
-    const data = await Role.find().limit(10);
+    let content = await Role.aggregate([
+      {
+        $match: {},
+      },
+      {
+        $facet: {
+          meta: [
+            {
+              $count: "total",
+            },
+            {
+              $addFields: {
+                pages: { $ceil: { $divide: ["$total", limit] } },
+                page: page_no,
+              },
+            },
+          ],
+          data: [
+            {
+              $skip: (page_no - 1) * limit,
+            },
+            {
+              $limit: limit,
+            },
+          ],
+        },
+      },
+    ]);
+
+    content = content[0];
+    content.meta = { ...content.meta[0] };
+
     res.status(200).json({
       status: true,
-      content: {
-        meta: {
-          total: 2,
-          pages: 1,
-          page: 1,
-        },
-        data,
-      },
+      content,
     });
   } catch (error) {
+    console.log(error.message);
     res.status(400);
     throw new Error("Failed to load data");
   }

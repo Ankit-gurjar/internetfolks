@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+const User = require("../models/usermodel");
 const expressAsyncHandler = require("express-async-handler");
 
 const protect = expressAsyncHandler(async (req, res, next) => {
@@ -18,15 +18,28 @@ const protect = expressAsyncHandler(async (req, res, next) => {
       req.user = await User.findById(decoded.id).select("-password");
       next();
     } catch (error) {
-      res.status(401);
-      console.log(error);
-      throw new Error("Not authorized, token failed");
+      res.status(401).json({
+        status: false,
+        errors: [
+          {
+            message: "You need to sign in to proceed.",
+            code: "NOT_SIGNEDIN",
+          },
+        ],
+      });
     }
   }
 
   if (!token) {
-    res.sendStatus(401);
-    throw new Error("Not authorized, no token");
+    res.sendStatus(401).json({
+      status: false,
+      errors: [
+        {
+          message: "You need to sign in to proceed.",
+          code: "NOT_SIGNEDIN",
+        },
+      ],
+    });
   }
 });
 
