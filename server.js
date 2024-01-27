@@ -30,8 +30,8 @@ app.get("/", (req, res) => {
 /*************Api's**************/
 
 app.use("/api/v1/role", roleRoute);
-app.use("/api/v1/auth", userRoute);
-app.use("/api/v1/community", communityRoute);
+// app.use("/api/v1/auth", userRoute);
+// app.use("/api/v1/community", communityRoute);
 
 app.use(notfound);
 app.use(errorHandler);
