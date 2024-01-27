@@ -51,6 +51,7 @@ const createUser = expressAsyncHandler(async (req, res) => {
         },
       ],
     });
+    return;
   }
 
   const user = await User.create({
