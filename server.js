@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/role", roleRoute);
 app.use("/api/v1/auth", userRoute);
 app.use("/api/v1/community", communityRoute);
-app.use("api/v1/member", memberRouter);
+app.use("/api/v1/member", memberRouter);
 
 app.use(notfound);
 app.use(errorHandler);
